@@ -1,0 +1,14 @@
+app: 'GO-HABITS'
+version: 'v0.0.1'
+
+http:
+  port: 8000
+
+database:
+  mysql:
+    driver: 'mysql'
+    user: 'root'
+    password: 'root'
+    host: 'localhost'
+    port: '3306'
+    dbname: 'go-habits'
