@@ -1,0 +1,121 @@
+package mysql
+
+import (
+	"database/sql"
+	"log"
+
+	"github.com/google/uuid"
+	"github.com/jmoiron/sqlx"
+	"github.com/mrzalr/go-habits/internal/habit"
+	"github.com/mrzalr/go-habits/internal/habit/model"
+	"github.com/mrzalr/go-habits/pkg/date"
+)
+
+type queryParams map[string]any
+
+type repository struct {
+	db *sqlx.DB
+}
+
+func (r *repository) GetHabits(weekRange date.WeekRange) ([]model.Habit, error) {
+	query := `
+	SELECT 
+		id, activity, description, start_time, end_time, created_at 
+	FROM habit
+	WHERE created_at BETWEEN :startDate AND :endDate`
+
+	nstmt, err := r.db.PrepareNamed(query)
+	if err != nil {
+		log.Println(err)
+		return nil, habit.ErrInternalServer
+	}
+
+	rows, err := nstmt.Query(weekRange)
+	if err != nil {
+		log.Println(err)
+		if err == sql.ErrNoRows {
+			return nil, habit.ErrDataNotFound
+		}
+		return nil, habit.ErrInternalServer
+	}
+	defer rows.Close()
+
+	habits := []model.Habit{}
+	for rows.Next() {
+		m_habit := model.Habit{}
+		err := rows.Scan(
+			&m_habit.ID, &m_habit.Activity, &m_habit.Description, &m_habit.StartTime, &m_habit.EndTime, &m_habit.CreatedAt,
+		)
+		if err != nil {
+			log.Println(err)
+			return nil, habit.ErrInternalServer
+		}
+		habits = append(habits, m_habit)
+	}
+
+	return habits, err
+}
+
+func (r *repository) CreateHabit(m_habit model.Habit) (model.Habit, error) {
+	query := `
+	INSERT INTO 
+		habit(id, activity, description, start_time, end_time, created_at)
+	VALUES
+		(:id, :activity, :description, :startTime, :endTime, :createdAt)`
+
+	nstmt, err := r.db.PrepareNamed(query)
+	if err != nil {
+		log.Println(err)
+		return model.Habit{}, habit.ErrInternalServer
+	}
+
+	_, err = nstmt.Exec(m_habit)
+	if err != nil {
+		log.Println(err)
+		return model.Habit{}, habit.ErrInternalServer
+	}
+
+	m_habit, err = r.GetHabitByID(m_habit.ID)
+	if err != nil {
+		log.Println(err)
+		return model.Habit{}, err
+	}
+
+	return m_habit, nil
+}
+
+func (r *repository) GetHabitByID(id uuid.UUID) (model.Habit, error) {
+	query := `
+	SELECT 
+		id, activity, description, start_time, end_time, created_at 
+	FROM habit
+	WHERE id = :id`
+
+	params := map[string]interface{}{"id": id}
+
+	nstmt, err := r.db.PrepareNamed(query)
+	if err != nil {
+		log.Println(err)
+		return model.Habit{}, habit.ErrInternalServer
+	}
+
+	m_habit := model.Habit{}
+	err = nstmt.QueryRow(params).Scan(
+		&m_habit.ID, &m_habit.Activity, &m_habit.Description, &m_habit.StartTime, &m_habit.EndTime, &m_habit.CreatedAt,
+	)
+	if err != nil {
+		log.Println(err)
+		if err == sql.ErrNoRows {
+			return model.Habit{}, habit.ErrDataNotFound
+		}
+		return model.Habit{}, habit.ErrInternalServer
+	}
+
+	return m_habit, nil
+}
+
+func New(db *sqlx.DB) habit.Repository {
+	return &repository{
+		db: db,
+	}
+}

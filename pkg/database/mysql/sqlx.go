@@ -8,8 +8,8 @@ import (
 	"github.com/mrzalr/go-habits/pkg/configuration"
 )
 
-func New(config configuration.Configuration) (*sqlx.DB, error) {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
+func New(config *configuration.Configuration) (*sqlx.DB, error) {
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
 		config.Database.Mysql.User,
 		config.Database.Mysql.Password,
 		config.Database.Mysql.Host,

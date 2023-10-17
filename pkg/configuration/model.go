@@ -10,7 +10,7 @@ type Configuration struct {
 }
 
 type HttpConfig struct {
-	Port int
+	Port string
 }
 
 type MysqlConfig struct {
