@@ -29,6 +29,7 @@ func (r *repository) GetHabits(weekRange date.WeekRange) ([]model.Habit, error) 
 		log.Println(err)
 		return nil, habit.ErrInternalServer
 	}
+	defer nstmt.Close()
 
 	rows, err := nstmt.Query(weekRange)
 	if err != nil {
@@ -56,34 +57,6 @@ func (r *repository) GetHabits(weekRange date.WeekRange) ([]model.Habit, error) 
 	return habits, err
 }
 
-func (r *repository) CreateHabit(m_habit model.Habit) (model.Habit, error) {
-	query := `
-	INSERT INTO 
-		habit(id, activity, description, start_time, end_time, created_at)
-	VALUES
-		(:id, :activity, :description, :startTime, :endTime, :createdAt)`
-
-	nstmt, err := r.db.PrepareNamed(query)
-	if err != nil {
-		log.Println(err)
-		return model.Habit{}, habit.ErrInternalServer
-	}
-
-	_, err = nstmt.Exec(m_habit)
-	if err != nil {
-		log.Println(err)
-		return model.Habit{}, habit.ErrInternalServer
-	}
-
-	m_habit, err = r.GetHabitByID(m_habit.ID)
-	if err != nil {
-		log.Println(err)
-		return model.Habit{}, err
-	}
-
-	return m_habit, nil
-}
-
 func (r *repository) GetHabitByID(id uuid.UUID) (model.Habit, error) {
 	query := `
 	SELECT 
@@ -98,6 +71,7 @@ func (r *repository) GetHabitByID(id uuid.UUID) (model.Habit, error) {
 		log.Println(err)
 		return model.Habit{}, habit.ErrInternalServer
 	}
+	defer nstmt.Close()
 
 	m_habit := model.Habit{}
 	err = nstmt.QueryRow(params).Scan(
@@ -112,6 +86,56 @@ func (r *repository) GetHabitByID(id uuid.UUID) (model.Habit, error) {
 	}
 
 	return m_habit, nil
+}
+
+func (r *repository) CreateHabit(m_habit model.Habit) (uuid.UUID, error) {
+	query := `
+	INSERT INTO 
+		habit(id, activity, description, start_time, end_time, created_at)
+	VALUES
+		(:id, :activity, :description, :startTime, :endTime, :createdAt)`
+
+	nstmt, err := r.db.PrepareNamed(query)
+	if err != nil {
+		log.Println(err)
+		return uuid.UUID{}, habit.ErrInternalServer
+	}
+	defer nstmt.Close()
+
+	_, err = nstmt.Exec(m_habit)
+	if err != nil {
+		log.Println(err)
+		return uuid.UUID{}, habit.ErrInternalServer
+	}
+
+	return m_habit.ID, nil
+}
+
+func (r *repository) UpdateHabit(id uuid.UUID, m_habit model.Habit) (uuid.UUID, error) {
+	query := `
+	UPDATE habit 
+	SET 
+		activity = :activity,
+		description = :description,
+		start_time = :startTime,
+		end_time = :endTime
+	WHERE id = :id
+	`
+
+	nstmt, err := r.db.PrepareNamed(query)
+	if err != nil {
+		log.Println(err)
+		return uuid.UUID{}, habit.ErrInternalServer
+	}
+	defer nstmt.Close()
+
+	_, err = nstmt.Exec(m_habit)
+	if err != nil {
+		log.Println(err)
+		return uuid.UUID{}, habit.ErrInternalServer
+	}
+
+	return id, nil
 }
 
 func New(db *sqlx.DB) habit.Repository {

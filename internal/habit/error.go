@@ -1,8 +1,11 @@
 package habit
 
-import "fmt"
+import (
+	"errors"
+)
 
 var (
-	ErrDataNotFound   = fmt.Errorf("habit: data not found")
-	ErrInternalServer = fmt.Errorf("habit: internal server error")
+	ErrDataNotFound   = errors.New("habit: data not found")
+	ErrInternalServer = errors.New("habit: internal server error")
+	ErrAlreadyStarted = errors.New("habit: activity already started")
 )

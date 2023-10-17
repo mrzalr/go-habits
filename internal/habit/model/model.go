@@ -15,6 +15,14 @@ type Habit struct {
 	CreatedAt   time.Time `json:"created_at" db:"createdAt"`
 }
 
+func (h *Habit) Start() {
+	h.StartTime = time.Now()
+}
+
+func (h *Habit) Stop() {
+	h.EndTime = time.Now()
+}
+
 func NewHabit() Habit {
 	return Habit{
 		ID:        uuid.New(),

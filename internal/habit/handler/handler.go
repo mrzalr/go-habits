@@ -2,6 +2,7 @@ package handler
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 	"github.com/mrzalr/go-habits/internal/formatter"
 	"github.com/mrzalr/go-habits/internal/habit"
 	"github.com/mrzalr/go-habits/internal/habit/model"
@@ -35,6 +36,28 @@ func (h *handler) CreateHabit(c *fiber.Ctx) error {
 	return formatter.NewResponseCreated(c, result)
 }
 
+func (h *handler) StartActivity(c *fiber.Ctx) error {
+	id := uuid.MustParse(c.Params("id"))
+
+	result, err := h.usecase.StartActivity(id)
+	if err != nil {
+		return err
+	}
+
+	return formatter.NewResponseOk(c, result)
+}
+
+func (h *handler) StopActivity(c *fiber.Ctx) error {
+	id := uuid.MustParse(c.Params("id"))
+
+	result, err := h.usecase.StopActivity(id)
+	if err != nil {
+		return err
+	}
+
+	return formatter.NewResponseOk(c, result)
+}
+
 func New(app *fiber.App, usecase habit.Usecase) {
 	h := handler{
 		usecase: usecase,
@@ -43,4 +66,6 @@ func New(app *fiber.App, usecase habit.Usecase) {
 	v1 := app.Group("/v1")
 	v1.Get("/habits", h.GetHabits)
 	v1.Post("/habits", h.CreateHabit)
+	v1.Patch("/habits/:id/start", h.StartActivity)
+	v1.Patch("/habits/:id/done", h.StopActivity)
 }
