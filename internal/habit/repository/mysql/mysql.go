@@ -27,7 +27,7 @@ func (r *repository) GetHabits(weekRange date.WeekRange) ([]model.Habit, error) 
 	nstmt, err := r.db.PrepareNamed(query)
 	if err != nil {
 		log.Println(err)
-		return nil, habit.ErrInternalServer
+		return nil, err
 	}
 	defer nstmt.Close()
 
@@ -37,7 +37,7 @@ func (r *repository) GetHabits(weekRange date.WeekRange) ([]model.Habit, error) 
 		if err == sql.ErrNoRows {
 			return nil, habit.ErrDataNotFound
 		}
-		return nil, habit.ErrInternalServer
+		return nil, err
 	}
 	defer rows.Close()
 
@@ -49,7 +49,7 @@ func (r *repository) GetHabits(weekRange date.WeekRange) ([]model.Habit, error) 
 		)
 		if err != nil {
 			log.Println(err)
-			return nil, habit.ErrInternalServer
+			return nil, err
 		}
 		habits = append(habits, m_habit)
 	}
@@ -69,7 +69,7 @@ func (r *repository) GetHabitByID(id uuid.UUID) (model.Habit, error) {
 	nstmt, err := r.db.PrepareNamed(query)
 	if err != nil {
 		log.Println(err)
-		return model.Habit{}, habit.ErrInternalServer
+		return model.Habit{}, err
 	}
 	defer nstmt.Close()
 
@@ -82,7 +82,7 @@ func (r *repository) GetHabitByID(id uuid.UUID) (model.Habit, error) {
 		if err == sql.ErrNoRows {
 			return model.Habit{}, habit.ErrDataNotFound
 		}
-		return model.Habit{}, habit.ErrInternalServer
+		return model.Habit{}, err
 	}
 
 	return m_habit, nil
@@ -98,14 +98,14 @@ func (r *repository) CreateHabit(m_habit model.Habit) (uuid.UUID, error) {
 	nstmt, err := r.db.PrepareNamed(query)
 	if err != nil {
 		log.Println(err)
-		return uuid.UUID{}, habit.ErrInternalServer
+		return uuid.UUID{}, err
 	}
 	defer nstmt.Close()
 
 	_, err = nstmt.Exec(m_habit)
 	if err != nil {
 		log.Println(err)
-		return uuid.UUID{}, habit.ErrInternalServer
+		return uuid.UUID{}, err
 	}
 
 	return m_habit.ID, nil
@@ -125,14 +125,14 @@ func (r *repository) UpdateHabit(id uuid.UUID, m_habit model.Habit) (uuid.UUID, 
 	nstmt, err := r.db.PrepareNamed(query)
 	if err != nil {
 		log.Println(err)
-		return uuid.UUID{}, habit.ErrInternalServer
+		return uuid.UUID{}, err
 	}
 	defer nstmt.Close()
 
 	_, err = nstmt.Exec(m_habit)
 	if err != nil {
 		log.Println(err)
-		return uuid.UUID{}, habit.ErrInternalServer
+		return uuid.UUID{}, err
 	}
 
 	return id, nil

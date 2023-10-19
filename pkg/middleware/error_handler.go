@@ -1,23 +1,19 @@
 package middleware
 
 import (
-	"errors"
-
 	"github.com/gofiber/fiber/v2"
-	"github.com/mrzalr/go-habits/internal/common"
-	"github.com/mrzalr/go-habits/internal/habit"
+	"github.com/google/uuid"
+	"github.com/mrzalr/go-habits/internal/formatter"
 )
 
-func ErrorHandler(c *fiber.Ctx, err error) error {
-	status := fiber.StatusInternalServerError
-	message := "internal server error"
-
-	switch {
-	case errors.Is(err, habit.ErrDataNotFound):
-		status = fiber.StatusNotFound
-		message = "not found"
+func ErrorHandler(c *fiber.Ctx) error {
+	err := c.Next()
+	if err == nil {
+		return c.Next()
 	}
 
-	c.Status(status)
-	return c.JSON(common.NewErrorResponse(status, message, err.Error()))
+	traceID := uuid.New().String()
+	c.Set("X-Trace-ID", traceID)
+
+	return formatter.SendErrorResponse(c, err, traceID)
 }

@@ -7,7 +7,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/jmoiron/sqlx"
 	"github.com/mrzalr/go-habits/pkg/configuration"
-	"github.com/mrzalr/go-habits/pkg/middleware"
 )
 
 type server struct {
@@ -30,7 +29,7 @@ func (s *server) Run() error {
 
 func New(db *sqlx.DB, cfg *configuration.Configuration) *server {
 	app := fiber.New(fiber.Config{
-		ErrorHandler: middleware.ErrorHandler,
+		DisableStartupMessage: true,
 	})
 
 	return &server{

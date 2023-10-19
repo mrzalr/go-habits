@@ -3,6 +3,7 @@ package handler
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
+	"github.com/mrzalr/go-habits/internal/common"
 	"github.com/mrzalr/go-habits/internal/formatter"
 	"github.com/mrzalr/go-habits/internal/habit"
 	"github.com/mrzalr/go-habits/internal/habit/model"
@@ -18,7 +19,7 @@ func (h *handler) GetHabits(c *fiber.Ctx) error {
 		return err
 	}
 
-	return formatter.NewResponseOk(c, result)
+	return formatter.SendSuccessResponse(c, common.StatusOk, result)
 }
 
 func (h *handler) CreateHabit(c *fiber.Ctx) error {
@@ -33,7 +34,7 @@ func (h *handler) CreateHabit(c *fiber.Ctx) error {
 		return err
 	}
 
-	return formatter.NewResponseCreated(c, result)
+	return formatter.SendSuccessResponse(c, common.StatusCreated, result)
 }
 
 func (h *handler) StartActivity(c *fiber.Ctx) error {
@@ -44,7 +45,7 @@ func (h *handler) StartActivity(c *fiber.Ctx) error {
 		return err
 	}
 
-	return formatter.NewResponseOk(c, result)
+	return formatter.SendSuccessResponse(c, common.StatusOk, result)
 }
 
 func (h *handler) StopActivity(c *fiber.Ctx) error {
@@ -55,7 +56,7 @@ func (h *handler) StopActivity(c *fiber.Ctx) error {
 		return err
 	}
 
-	return formatter.NewResponseOk(c, result)
+	return formatter.SendSuccessResponse(c, common.StatusOk, result)
 }
 
 func New(app *fiber.App, usecase habit.Usecase) {
