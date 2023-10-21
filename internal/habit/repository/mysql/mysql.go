@@ -27,7 +27,7 @@ func (r *repository) GetHabits(weekRange date.WeekRange) ([]model.Habit, error) 
 	rows, err := nstmt.Query(weekRange)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return nil, habit.ErrDataNotFound
+			return nil, model.ErrDataNotFound
 		}
 		return nil, err
 	}
@@ -63,7 +63,7 @@ func (r *repository) GetHabitByID(id uuid.UUID) (model.Habit, error) {
 	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return model.Habit{}, habit.ErrDataNotFound
+			return model.Habit{}, model.ErrDataNotFound
 		}
 		return model.Habit{}, err
 	}

@@ -41,10 +41,10 @@ func (u *usecase) StartActivity(id uuid.UUID) (model.Habit, error) {
 		return model.Habit{}, err
 	}
 
-	if m_habit.StartTime != (time.Time{}) {
-		return model.Habit{}, habit.ErrAlreadyStarted
+	err = m_habit.Start()
+	if err != nil {
+		return model.Habit{}, err
 	}
-	m_habit.Start()
 
 	updatedID, err := u.repository.UpdateHabit(id, m_habit)
 	if err != nil {

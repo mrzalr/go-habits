@@ -15,8 +15,13 @@ type Habit struct {
 	CreatedAt   time.Time `json:"created_at" db:"createdAt"`
 }
 
-func (h *Habit) Start() {
+func (h *Habit) Start() error {
+	if h.StartTime != (time.Time{}) {
+		return ErrAlreadyStarted
+	}
+
 	h.StartTime = time.Now()
+	return nil
 }
 
 func (h *Habit) Stop() {
