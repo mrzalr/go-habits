@@ -26,7 +26,7 @@ func errorMapper(err error) common.Status {
 
 	status, ok := errMap[err]
 	if !ok {
-		status = common.StatusInternalServerError
+		return common.StatusInternalServerError
 	}
 
 	status.Message = err.Error()

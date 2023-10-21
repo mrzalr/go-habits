@@ -7,20 +7,21 @@ import (
 )
 
 type loggerModel struct {
-	app          string
-	version      string
-	method       string
-	status       int
-	header       string
-	uri          string
-	body         string
-	response     string
-	traceID      string
-	responseTime time.Duration
+	app           string
+	version       string
+	method        string
+	status        int
+	header        string
+	uri           string
+	body          string
+	response      string
+	traceID       string
+	detailedError string
+	responseTime  time.Duration
 }
 
 func (m *loggerModel) GenerateLogFields() []zap.Field {
-	return []zap.Field{
+	fields := []zap.Field{
 		zap.String("app", m.app),
 		zap.String("version", m.version),
 		zap.String("method", m.method),
@@ -29,7 +30,13 @@ func (m *loggerModel) GenerateLogFields() []zap.Field {
 		zap.String("uri", m.uri),
 		zap.String("body", m.body),
 		zap.String("response", m.response),
-		zap.String("trace_id", m.traceID),
 		zap.Duration("response_time", m.responseTime),
+		zap.String("trace_id", m.traceID),
 	}
+
+	if len(m.detailedError) != 0 {
+		fields = append(fields, zap.String("detailed_error", m.detailedError))
+	}
+
+	return fields
 }

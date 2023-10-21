@@ -26,14 +26,12 @@ func (r *repository) GetHabits(weekRange date.WeekRange) ([]model.Habit, error) 
 
 	nstmt, err := r.db.PrepareNamed(query)
 	if err != nil {
-		log.Println(err)
 		return nil, err
 	}
 	defer nstmt.Close()
 
 	rows, err := nstmt.Query(weekRange)
 	if err != nil {
-		log.Println(err)
 		if err == sql.ErrNoRows {
 			return nil, habit.ErrDataNotFound
 		}
@@ -48,13 +46,12 @@ func (r *repository) GetHabits(weekRange date.WeekRange) ([]model.Habit, error) 
 			&m_habit.ID, &m_habit.Activity, &m_habit.Description, &m_habit.StartTime, &m_habit.EndTime, &m_habit.CreatedAt,
 		)
 		if err != nil {
-			log.Println(err)
 			return nil, err
 		}
 		habits = append(habits, m_habit)
 	}
 
-	return habits, err
+	return habits, nil
 }
 
 func (r *repository) GetHabitByID(id uuid.UUID) (model.Habit, error) {

@@ -14,6 +14,7 @@ func ErrorHandler(c *fiber.Ctx) error {
 
 	traceID := uuid.New().String()
 	c.Set("X-Trace-ID", traceID)
+	c.Locals("detailed_error", err.Error())
 
 	return formatter.SendErrorResponse(c, err, traceID)
 }

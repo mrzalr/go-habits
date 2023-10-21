@@ -28,17 +28,23 @@ func Log(cfg *configuration.Configuration) fiber.Handler {
 			traceID = uuid.New().String()
 		}
 
+		var detailedError string
+		if dtlErr := c.Locals("detailed_error"); dtlErr != nil {
+			detailedError = dtlErr.(string)
+		}
+
 		_loggerModel := loggerModel{
-			app:          cfg.App,
-			version:      cfg.Version,
-			method:       string(method),
-			status:       status,
-			header:       string(header),
-			uri:          string(uri),
-			body:         string(body),
-			response:     string(respBody),
-			traceID:      traceID,
-			responseTime: time.Since(timeStart),
+			app:           cfg.App,
+			version:       cfg.Version,
+			method:        string(method),
+			status:        status,
+			header:        string(header),
+			uri:           string(uri),
+			body:          string(body),
+			response:      string(respBody),
+			traceID:       traceID,
+			detailedError: detailedError,
+			responseTime:  time.Since(timeStart),
 		}
 
 		logger.Info(":", _loggerModel.GenerateLogFields()...)
