@@ -7,6 +7,7 @@ type Configuration struct {
 	Database struct {
 		Mysql MysqlConfig
 	}
+	Logger
 }
 
 type HttpConfig struct {
@@ -20,4 +21,10 @@ type MysqlConfig struct {
 	Host     string
 	Port     string
 	Dbname   string
+}
+
+type Logger struct {
+	SaveLogFile        bool
+	SysLogFileLocation string
+	TDRLogFileLocation string
 }

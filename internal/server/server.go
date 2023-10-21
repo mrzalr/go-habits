@@ -2,11 +2,11 @@ package server
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/jmoiron/sqlx"
 	"github.com/mrzalr/go-habits/pkg/configuration"
+	"github.com/mrzalr/go-habits/pkg/logger"
 )
 
 type server struct {
@@ -23,7 +23,7 @@ func (s *server) Run() error {
 		return ErrInvalidPort
 	}
 
-	log.Printf("Listening on port %s\n", port)
+	logger.Info(fmt.Sprintf("Listening on port %s\n", port))
 	return s.app.Listen(fmt.Sprintf(":%s", port))
 }
 

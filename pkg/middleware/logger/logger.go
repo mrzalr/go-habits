@@ -47,7 +47,7 @@ func Log(cfg *configuration.Configuration) fiber.Handler {
 			responseTime:  time.Since(timeStart),
 		}
 
-		logger.Info(":", _loggerModel.GenerateLogFields()...)
+		logger.InfoTDR(":", _loggerModel.GenerateLogFields()...)
 		return nil
 	}
 }

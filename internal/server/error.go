@@ -1,5 +1,5 @@
 package server
 
-import "fmt"
+import "errors"
 
-var ErrInvalidPort = fmt.Errorf("invalid server port, check your config.yaml!")
+var ErrInvalidPort = errors.New("SERVER: invalid port, please check your config.yaml")
