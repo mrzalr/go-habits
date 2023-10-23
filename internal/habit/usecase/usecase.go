@@ -36,17 +36,17 @@ func (u *usecase) CreateHabit(habit model.Habit) (model.Habit, error) {
 }
 
 func (u *usecase) StartActivity(id uuid.UUID) (model.Habit, error) {
-	m_habit, err := u.repository.GetHabitByID(id)
+	_habit, err := u.repository.GetHabitByID(id)
 	if err != nil {
 		return model.Habit{}, err
 	}
 
-	err = m_habit.Start()
+	err = _habit.Start()
 	if err != nil {
 		return model.Habit{}, err
 	}
 
-	updatedID, err := u.repository.UpdateHabit(id, m_habit)
+	updatedID, err := u.repository.UpdateHabit(id, _habit)
 	if err != nil {
 		return model.Habit{}, err
 	}
@@ -55,14 +55,14 @@ func (u *usecase) StartActivity(id uuid.UUID) (model.Habit, error) {
 }
 
 func (u *usecase) StopActivity(id uuid.UUID) (model.Habit, error) {
-	m_habit, err := u.repository.GetHabitByID(id)
+	_habit, err := u.repository.GetHabitByID(id)
 	if err != nil {
 		return model.Habit{}, err
 	}
 
-	m_habit.Stop()
+	_habit.Stop()
 
-	updatedID, err := u.repository.UpdateHabit(id, m_habit)
+	updatedID, err := u.repository.UpdateHabit(id, _habit)
 	if err != nil {
 		return model.Habit{}, err
 	}

@@ -3,7 +3,7 @@ package formatter
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/mrzalr/go-habits/internal/common"
-	m_habit "github.com/mrzalr/go-habits/internal/habit/model"
+	habit "github.com/mrzalr/go-habits/internal/habit/model"
 	"github.com/mrzalr/go-habits/pkg/validator"
 )
 
@@ -25,9 +25,9 @@ func errorMapper(err error) common.Status {
 		validator.ErrStructValidation: common.StatusBadRequest,
 
 		// Habit
-		m_habit.ErrDataNotFound:   common.StatusNotFound,
-		m_habit.ErrAlreadyStarted: common.StatusInternalServerError,
-		m_habit.ErrBadRequest:     common.StatusBadRequest,
+		habit.ErrDataNotFound:   common.StatusNotFound,
+		habit.ErrAlreadyStarted: common.StatusInternalServerError,
+		habit.ErrBadRequest:     common.StatusBadRequest,
 	}
 
 	status, ok := errMap[err]

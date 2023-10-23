@@ -35,14 +35,14 @@ func (r *repository) GetHabits(weekRange date.WeekRange) ([]model.Habit, error) 
 
 	habits := []model.Habit{}
 	for rows.Next() {
-		m_habit := model.Habit{}
+		_habit := model.Habit{}
 		err := rows.Scan(
-			&m_habit.ID, &m_habit.Activity, &m_habit.Description, &m_habit.StartTime, &m_habit.EndTime, &m_habit.CreatedAt,
+			&_habit.ID, &_habit.Activity, &_habit.Description, &_habit.StartTime, &_habit.EndTime, &_habit.CreatedAt,
 		)
 		if err != nil {
 			return nil, err
 		}
-		habits = append(habits, m_habit)
+		habits = append(habits, _habit)
 	}
 
 	return habits, nil
@@ -57,9 +57,9 @@ func (r *repository) GetHabitByID(id uuid.UUID) (model.Habit, error) {
 
 	params := queryParams{"id": id}
 
-	m_habit := model.Habit{}
+	_habit := model.Habit{}
 	err = nstmt.QueryRow(params).Scan(
-		&m_habit.ID, &m_habit.Activity, &m_habit.Description, &m_habit.StartTime, &m_habit.EndTime, &m_habit.CreatedAt,
+		&_habit.ID, &_habit.Activity, &_habit.Description, &_habit.StartTime, &_habit.EndTime, &_habit.CreatedAt,
 	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -68,32 +68,32 @@ func (r *repository) GetHabitByID(id uuid.UUID) (model.Habit, error) {
 		return model.Habit{}, err
 	}
 
-	return m_habit, nil
+	return _habit, nil
 }
 
-func (r *repository) CreateHabit(m_habit model.Habit) (uuid.UUID, error) {
+func (r *repository) CreateHabit(_habit model.Habit) (uuid.UUID, error) {
 	nstmt, err := r.db.PrepareNamed(CreateHabitQuery)
 	if err != nil {
 		return uuid.UUID{}, err
 	}
 	defer nstmt.Close()
 
-	_, err = nstmt.Exec(m_habit)
+	_, err = nstmt.Exec(_habit)
 	if err != nil {
 		return uuid.UUID{}, err
 	}
 
-	return m_habit.ID, nil
+	return _habit.ID, nil
 }
 
-func (r *repository) UpdateHabit(id uuid.UUID, m_habit model.Habit) (uuid.UUID, error) {
+func (r *repository) UpdateHabit(id uuid.UUID, _habit model.Habit) (uuid.UUID, error) {
 	nstmt, err := r.db.PrepareNamed(UpdateHabitQuery)
 	if err != nil {
 		return uuid.UUID{}, err
 	}
 	defer nstmt.Close()
 
-	_, err = nstmt.Exec(m_habit)
+	_, err = nstmt.Exec(_habit)
 	if err != nil {
 		return uuid.UUID{}, err
 	}
