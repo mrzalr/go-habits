@@ -7,6 +7,7 @@ import (
 	"github.com/mrzalr/go-habits/internal/formatter"
 	"github.com/mrzalr/go-habits/internal/habit"
 	"github.com/mrzalr/go-habits/internal/habit/model"
+	_validator "github.com/mrzalr/go-habits/pkg/validator"
 )
 
 type handler struct {
@@ -25,7 +26,11 @@ func (h *handler) GetHabits(c *fiber.Ctx) error {
 func (h *handler) CreateHabit(c *fiber.Ctx) error {
 	payload := model.NewHabit()
 	if err := c.BodyParser(&payload); err != nil {
-		// TODO should return validate error
+		return model.ErrBadRequest
+	}
+
+	err := _validator.ValidateStruct(payload)
+	if err != nil {
 		return err
 	}
 

@@ -8,6 +8,7 @@ import (
 	"github.com/mrzalr/go-habits/pkg/configuration"
 	"github.com/mrzalr/go-habits/pkg/database/mysql"
 	"github.com/mrzalr/go-habits/pkg/logger"
+	"github.com/mrzalr/go-habits/pkg/validator"
 )
 
 func StartApplication() {
@@ -25,6 +26,8 @@ func StartApplication() {
 	if err != nil {
 		log.Fatalf("LOGGER: unable to create logger - %s", err.Error())
 	}
+
+	validator.Load()
 
 	db, err := mysql.New(cfg)
 	if err != nil {

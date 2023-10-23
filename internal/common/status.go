@@ -12,4 +12,5 @@ var (
 	StatusCreated             = Status{fiber.StatusCreated, "created"}
 	StatusNotFound            = Status{fiber.StatusNotFound, "not found"}
 	StatusInternalServerError = Status{fiber.StatusInternalServerError, "internal server error"}
+	StatusBadRequest          = Status{fiber.StatusBadRequest, "bad request"}
 )

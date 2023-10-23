@@ -8,7 +8,7 @@ import (
 
 type Habit struct {
 	ID          uuid.UUID `json:"id" db:"id"`
-	Activity    string    `json:"activity" db:"activity"`
+	Activity    string    `json:"activity" db:"activity" validate:"required,min=8"`
 	Description string    `json:"description" db:"description"`
 	StartTime   time.Time `json:"start_time" db:"startTime"`
 	EndTime     time.Time `json:"end_time" db:"endTime"`
