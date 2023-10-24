@@ -19,6 +19,7 @@ func ValidateStruct(target interface{}) error {
 	}
 
 	ErrStructValidation = &validationError{
+		Target: target,
 		Errors: err.(validator.ValidationErrors),
 	}
 
