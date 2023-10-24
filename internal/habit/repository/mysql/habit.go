@@ -6,11 +6,12 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/mrzalr/go-habits/internal/habit/model"
+	"github.com/mrzalr/go-habits/internal/habit/repository/mysql/query"
 	"github.com/mrzalr/go-habits/pkg/date"
 )
 
-func (r *repository) GetHabits(weekRange date.WeekRange) ([]model.Habit, error) {
-	nstmt, err := r.db.PrepareNamed(GetAllHabitsQuery)
+func (r *repository) GetHabits(weekRange date.WeekRange) ([]model.HabitResponse, error) {
+	nstmt, err := r.db.PrepareNamed(query.Habit.GetAllHabits())
 	if err != nil {
 		return nil, err
 	}
@@ -25,11 +26,11 @@ func (r *repository) GetHabits(weekRange date.WeekRange) ([]model.Habit, error) 
 	}
 	defer rows.Close()
 
-	habits := []model.Habit{}
+	habits := []model.HabitResponse{}
 	for rows.Next() {
-		habit := model.Habit{}
+		habit := model.HabitResponse{}
 		err := rows.Scan(
-			&habit.ID, &habit.CategoryID, &habit.Activity, &habit.Description, &habit.CreatedAt, &habit.UpdatedAt,
+			&habit.ID, &habit.Category, &habit.Activity, &habit.Description, &habit.CreatedAt, &habit.UpdatedAt,
 		)
 		if err != nil {
 			return nil, err
@@ -40,31 +41,31 @@ func (r *repository) GetHabits(weekRange date.WeekRange) ([]model.Habit, error) 
 	return habits, nil
 }
 
-func (r *repository) GetHabitByID(id uuid.UUID) (model.Habit, error) {
-	nstmt, err := r.db.PrepareNamed(GetHabitByIDQuery)
+func (r *repository) GetHabitByID(id uuid.UUID) (model.HabitResponse, error) {
+	nstmt, err := r.db.PrepareNamed(query.Habit.GetHabitByID())
 	if err != nil {
-		return model.Habit{}, err
+		return model.HabitResponse{}, err
 	}
 	defer nstmt.Close()
 
 	params := queryParams{"id": id}
 
-	habit := model.Habit{}
+	habit := model.HabitResponse{}
 	err = nstmt.QueryRow(params).Scan(
-		&habit.ID, &habit.CategoryID, &habit.Activity, &habit.Description, &habit.CreatedAt, &habit.UpdatedAt,
+		&habit.ID, &habit.Category, &habit.Activity, &habit.Description, &habit.CreatedAt, &habit.UpdatedAt,
 	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return model.Habit{}, model.ErrDataNotFound
+			return model.HabitResponse{}, model.ErrDataNotFound
 		}
-		return model.Habit{}, err
+		return model.HabitResponse{}, err
 	}
 
 	return habit, nil
 }
 
 func (r *repository) CreateHabit(habit model.Habit) (uuid.UUID, error) {
-	nstmt, err := r.db.PrepareNamed(CreateHabitQuery)
+	nstmt, err := r.db.PrepareNamed(query.Habit.CreateHabit())
 	if err != nil {
 		return uuid.UUID{}, err
 	}
@@ -79,7 +80,7 @@ func (r *repository) CreateHabit(habit model.Habit) (uuid.UUID, error) {
 }
 
 func (r *repository) UpdateHabit(habit model.Habit) (uuid.UUID, error) {
-	nstmt, err := r.db.PrepareNamed(UpdateHabitQuery)
+	nstmt, err := r.db.PrepareNamed(query.Habit.UpdateHabit())
 	if err != nil {
 		return uuid.UUID{}, err
 	}

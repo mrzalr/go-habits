@@ -7,10 +7,11 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/mrzalr/go-habits/internal/habit/model"
+	"github.com/mrzalr/go-habits/internal/habit/repository/mysql/query"
 )
 
 func (r *repository) GetHabitDetailByID(id uuid.UUID) (model.HabitDetail, error) {
-	nstmt, err := r.db.PrepareNamed(GetHabitDetailByIDQuery)
+	nstmt, err := r.db.PrepareNamed(query.HabitDetail.GetHabitDetailByID())
 	if err != nil {
 		return model.HabitDetail{}, err
 	}
@@ -38,7 +39,7 @@ func (r *repository) GetHabitDetailByID(id uuid.UUID) (model.HabitDetail, error)
 }
 
 func (r *repository) CreateHabitDetail(habitDetail model.HabitDetail) (uuid.UUID, error) {
-	nstmt, err := r.db.PrepareNamed(CreateHabitDetailQuery)
+	nstmt, err := r.db.PrepareNamed(query.HabitDetail.CreateHabitDetail())
 	if err != nil {
 		return uuid.UUID{}, nil
 	}
@@ -53,7 +54,7 @@ func (r *repository) CreateHabitDetail(habitDetail model.HabitDetail) (uuid.UUID
 }
 
 func (r *repository) GetLastHabitDetailStarted(habitID uuid.UUID) (model.HabitDetail, error) {
-	nstmt, err := r.db.PrepareNamed(GetLastHabitDetailStartedQuery)
+	nstmt, err := r.db.PrepareNamed(query.HabitDetail.GetLastHabitDetailStarted())
 	if err != nil {
 		return model.HabitDetail{}, err
 	}
@@ -81,7 +82,7 @@ func (r *repository) GetLastHabitDetailStarted(habitID uuid.UUID) (model.HabitDe
 }
 
 func (r *repository) UpdateHabitDetail(habitDetail model.HabitDetail) (uuid.UUID, error) {
-	nstmt, err := r.db.PrepareNamed(UpdateHabitDetailQuery)
+	nstmt, err := r.db.PrepareNamed(query.HabitDetail.UpdateHabitDetail())
 	if err != nil {
 		return uuid.UUID{}, err
 	}

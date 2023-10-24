@@ -8,7 +8,7 @@ import (
 	"github.com/mrzalr/go-habits/pkg/date"
 )
 
-func (u *usecase) GetHabits() ([]model.Habit, error) {
+func (u *usecase) GetHabits() ([]model.HabitResponse, error) {
 	today := time.Now()
 	wd := int(today.Weekday())
 	weekRange := date.GetWeekRange(wd)
@@ -21,19 +21,19 @@ func (u *usecase) GetHabits() ([]model.Habit, error) {
 	return habits, nil
 }
 
-func (u *usecase) CreateHabit(habit model.Habit) (model.Habit, error) {
+func (u *usecase) CreateHabit(habit model.Habit) (model.HabitResponse, error) {
 	insertedID, err := u.repository.CreateHabit(habit)
 	if err != nil {
-		return model.Habit{}, err
+		return model.HabitResponse{}, err
 	}
 
 	return u.repository.GetHabitByID(insertedID)
 }
 
-func (u *usecase) UpdateHabit(id uuid.UUID, habit model.Habit) (model.Habit, error) {
+func (u *usecase) UpdateHabit(id uuid.UUID, habit model.Habit) (model.HabitResponse, error) {
 	foundHabit, err := u.repository.GetHabitByID(id)
 	if err != nil {
-		return model.Habit{}, err
+		return model.HabitResponse{}, err
 	}
 
 	habit.ID = foundHabit.ID
@@ -41,7 +41,7 @@ func (u *usecase) UpdateHabit(id uuid.UUID, habit model.Habit) (model.Habit, err
 
 	updatedID, err := u.repository.UpdateHabit(habit)
 	if err != nil {
-		return model.Habit{}, err
+		return model.HabitResponse{}, err
 	}
 
 	return u.repository.GetHabitByID(updatedID)

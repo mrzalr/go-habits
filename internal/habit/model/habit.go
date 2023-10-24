@@ -21,3 +21,12 @@ func NewHabit() Habit {
 		CreatedAt: time.Now(),
 	}
 }
+
+type HabitResponse struct {
+	ID          uuid.UUID `json:"id"`
+	Category    string    `json:"category"`
+	Activity    string    `json:"activity"`
+	Description string    `json:"description"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+}

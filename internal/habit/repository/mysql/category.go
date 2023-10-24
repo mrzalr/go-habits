@@ -6,10 +6,11 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/mrzalr/go-habits/internal/habit/model"
+	"github.com/mrzalr/go-habits/internal/habit/repository/mysql/query"
 )
 
 func (r *repository) GetHabitCategories() ([]model.Category, error) {
-	stmt, err := r.db.Prepare(GetHabitCategoriesQuery)
+	stmt, err := r.db.Prepare(query.Category.GetHabitCategories())
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +41,7 @@ func (r *repository) GetHabitCategories() ([]model.Category, error) {
 }
 
 func (r *repository) GetHabitCategoryByID(id uuid.UUID) (model.Category, error) {
-	nstmt, err := r.db.PrepareNamed(GetHabitCategoryByIDQuery)
+	nstmt, err := r.db.PrepareNamed(query.Category.GetHabitCategoryByID())
 	if err != nil {
 		return model.Category{}, err
 	}
@@ -63,7 +64,7 @@ func (r *repository) GetHabitCategoryByID(id uuid.UUID) (model.Category, error) 
 }
 
 func (r *repository) CreateHabitCategory(category model.Category) (uuid.UUID, error) {
-	nstmt, err := r.db.PrepareNamed(CreateHabitCategoryQuery)
+	nstmt, err := r.db.PrepareNamed(query.Category.CreateHabitCategory())
 	if err != nil {
 		return uuid.UUID{}, err
 	}
@@ -78,7 +79,7 @@ func (r *repository) CreateHabitCategory(category model.Category) (uuid.UUID, er
 }
 
 func (r *repository) UpdateHabitCategory(category model.Category) (uuid.UUID, error) {
-	nstmt, err := r.db.PrepareNamed(UpdateHabitCategoryQuery)
+	nstmt, err := r.db.PrepareNamed(query.Category.UpdateHabitCategory())
 	if err != nil {
 		return uuid.UUID{}, err
 	}
