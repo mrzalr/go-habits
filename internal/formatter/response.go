@@ -28,6 +28,7 @@ func errorMapper(err error) common.Status {
 		habit.ErrDataNotFound:   common.StatusNotFound,
 		habit.ErrAlreadyStarted: common.StatusInternalServerError,
 		habit.ErrBadRequest:     common.StatusBadRequest,
+		habit.ErrInvalidID:      common.StatusBadRequest,
 	}
 
 	status, ok := errMap[err]
