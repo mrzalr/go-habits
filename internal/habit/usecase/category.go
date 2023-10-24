@@ -1,6 +1,8 @@
 package usecase
 
 import (
+	"time"
+
 	"github.com/google/uuid"
 	"github.com/mrzalr/go-habits/internal/habit/model"
 )
@@ -30,6 +32,7 @@ func (u *usecase) UpdateHabitCategory(id uuid.UUID, category model.Category) (mo
 	}
 
 	category.ID = foundCatagory.ID
+	category.UpdatedAt = time.Now()
 
 	updatedID, err := u.repository.UpdateHabitCategory(category)
 	if err != nil {

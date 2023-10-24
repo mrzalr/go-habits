@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"time"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 	"github.com/mrzalr/go-habits/internal/common"
@@ -45,7 +43,7 @@ func (h *handler) UpdateHabitCategory(c *fiber.Ctx) error {
 		return model.ErrInvalidID
 	}
 
-	payload := model.Category{UpdatedAt: time.Now()}
+	payload := model.Category{}
 	if err := c.BodyParser(&payload); err != nil {
 		return model.ErrBadRequest
 	}

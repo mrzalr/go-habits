@@ -22,6 +22,7 @@ func New(app *fiber.App, usecase habit.Usecase) {
 
 	v1.Get("/habits", h.GetHabits)
 	v1.Post("/habits", h.CreateHabit)
+	v1.Patch("/habits/:id", h.UpdateHabit)
 
 	v1.Patch("/habits/:id/start", h.StartActivity)
 	v1.Patch("/habits/:id/end", h.StopActivity)

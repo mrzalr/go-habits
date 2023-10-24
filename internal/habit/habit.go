@@ -16,6 +16,7 @@ type Repository interface {
 	GetHabits(weekRange date.WeekRange) ([]model.Habit, error)
 	CreateHabit(habit model.Habit) (uuid.UUID, error)
 	GetHabitByID(id uuid.UUID) (model.Habit, error)
+	UpdateHabit(habit model.Habit) (uuid.UUID, error)
 
 	GetHabitDetailByID(id uuid.UUID) (model.HabitDetail, error)
 	GetLastHabitDetailStarted(habitID uuid.UUID) (model.HabitDetail, error)
@@ -30,6 +31,7 @@ type Usecase interface {
 
 	GetHabits() ([]model.Habit, error)
 	CreateHabit(habit model.Habit) (model.Habit, error)
+	UpdateHabit(id uuid.UUID, habit model.Habit) (model.Habit, error)
 
 	StartActivity(id uuid.UUID) (model.HabitDetail, error)
 	StopActivity(id uuid.UUID, remark model.StopHabitRequest) (model.HabitDetail, error)

@@ -29,7 +29,7 @@ func (r *repository) GetHabits(weekRange date.WeekRange) ([]model.Habit, error) 
 	for rows.Next() {
 		habit := model.Habit{}
 		err := rows.Scan(
-			&habit.ID, &habit.CategoryID, &habit.Activity, &habit.Description, &habit.CreatedAt,
+			&habit.ID, &habit.CategoryID, &habit.Activity, &habit.Description, &habit.CreatedAt, &habit.UpdatedAt,
 		)
 		if err != nil {
 			return nil, err
@@ -51,7 +51,7 @@ func (r *repository) GetHabitByID(id uuid.UUID) (model.Habit, error) {
 
 	habit := model.Habit{}
 	err = nstmt.QueryRow(params).Scan(
-		&habit.ID, &habit.CategoryID, &habit.Activity, &habit.Description, &habit.CreatedAt,
+		&habit.ID, &habit.CategoryID, &habit.Activity, &habit.Description, &habit.CreatedAt, &habit.UpdatedAt,
 	)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -65,6 +65,21 @@ func (r *repository) GetHabitByID(id uuid.UUID) (model.Habit, error) {
 
 func (r *repository) CreateHabit(habit model.Habit) (uuid.UUID, error) {
 	nstmt, err := r.db.PrepareNamed(CreateHabitQuery)
+	if err != nil {
+		return uuid.UUID{}, err
+	}
+	defer nstmt.Close()
+
+	_, err = nstmt.Exec(habit)
+	if err != nil {
+		return uuid.UUID{}, err
+	}
+
+	return habit.ID, nil
+}
+
+func (r *repository) UpdateHabit(habit model.Habit) (uuid.UUID, error) {
+	nstmt, err := r.db.PrepareNamed(UpdateHabitQuery)
 	if err != nil {
 		return uuid.UUID{}, err
 	}

@@ -28,21 +28,30 @@ var (
 
 	GetAllHabitsQuery = `
 	SELECT 
-		id, category_id, activity, description, created_at 
+		id, category_id, activity, description, created_at, updated_at
 	FROM habits
 	WHERE created_at BETWEEN :startDate AND :endDate`
 
 	GetHabitByIDQuery = `
 	SELECT 
-		id, category_id, activity, description, created_at 
+		id, category_id, activity, description, created_at, updated_at 
 	FROM habits
 	WHERE id = :id`
 
 	CreateHabitQuery = `
 	INSERT INTO 
-		habits(id, category_id, activity, description, created_at)
+		habits(id, category_id, activity, description, created_at, updated_at)
 	VALUES
-		(:id, :categoryID, :activity, :description, :createdAt)`
+		(:id, :categoryID, :activity, :description, :createdAt, :updatedAt)`
+
+	UpdateHabitQuery = `
+	UPDATE habits
+	SET
+		category_id = :categoryID,
+		activity = :activity,
+		description = :description,
+		updated_at = :updatedAt
+	WHERE id = :id`
 
 	// Habit detail query
 
